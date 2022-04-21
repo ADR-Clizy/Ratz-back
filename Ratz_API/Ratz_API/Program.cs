@@ -1,14 +1,17 @@
 using DatabaseConnection;
 using Microsoft.EntityFrameworkCore;
+using Ratz_API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+AddJWTTokenServicesExtensions.AddJWTTokenServices(builder.Services, builder.Configuration);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(); 
+builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
+builder.Services.AddScoped<IQrCodeRepository, SQLQrCodeRepository>();
 builder.Services.AddDbContextPool<RatzDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RatzDbConnection")));
 
 var app = builder.Build();
