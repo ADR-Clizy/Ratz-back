@@ -43,8 +43,24 @@ namespace Ratz_API.Controllers
         [HttpGet]
         [Route("/api/user")]
         [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
-        public ActionResult GetUser()
+        public ActionResult GetUser(string id)
         {
+            try
+            {
+                User aUser = _userRepository.GetUserById(Int32.Parse(id));
+                if (aUser != null)
+                {
+                   BasicUserDTO aResUser = new BasicUserDTO { Id = aUser.UserId, Email = aUser.Email };    
+                } 
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch
+            {
+                return BadRequest(JsonConvert.SerializeObject(new ErrorResponse("Une erreur est survenue, veuillez réessayer"), Formatting.Indented));
+            }
             return Ok("Authenticated");
         }
 
@@ -52,12 +68,16 @@ namespace Ratz_API.Controllers
         [Route("/api/register")]
         public ActionResult Register([FromBody] UserConnectionDTO iUserConnection)
         {
-            //TODO Test login && Check why email in token is null.
             try
             {
+                
                 if (!IsPasswordCorrect(iUserConnection.Password) || !IsMailCorrect(iUserConnection.Email))
                 {
                     return BadRequest(JsonConvert.SerializeObject(new ErrorResponse("Format incorrect"), Formatting.Indented));
+                }
+                if(_userRepository.GetUserByEmailAddress(iUserConnection.Email) != null)
+                {
+                    return Conflict(JsonConvert.SerializeObject(new ErrorResponse("Un compte avec cette adresse mail existe déjà"), Formatting.Indented));
                 }
                 string aHashedPassword = BCryptNet.HashPassword(iUserConnection.Password);
                 User aUser = new User { Email = iUserConnection.Email, Password = aHashedPassword };
@@ -78,7 +98,7 @@ namespace Ratz_API.Controllers
                 }
             } catch
             {
-                throw;
+                return BadRequest(JsonConvert.SerializeObject(new ErrorResponse("Une erreur est survenue, veuillez réessayer"), Formatting.Indented));
             }
         }
 
@@ -113,10 +133,8 @@ namespace Ratz_API.Controllers
                 }
             } catch
             {
-                throw;
+                return BadRequest(JsonConvert.SerializeObject(new ErrorResponse("Une erreur est survenue, veuillez réessayer"), Formatting.Indented));
             }
         }
-
-        //To add for authenticate routes :
     }
 }
