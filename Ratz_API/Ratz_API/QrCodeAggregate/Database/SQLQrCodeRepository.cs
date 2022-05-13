@@ -21,11 +21,17 @@ namespace Ratz_API.QrCodeAggregate.Database
             return aQrCode;
         }
 
+        public List<QrCode> GetAll(int iUserId)
+        {
+            return _context.QrCodes.Where((aQrCode) => iUserId == aQrCode.UserId).ToList();
+        }
+
         public QrCode GetQrCodeById(int iQrCodeId) => _context.QrCodes.Find(iQrCodeId);
 
-        public QrCode NewQrCode(string data)
+        public QrCode NewQrCode(string data, int userId)
         {
-            QrCode qrCode = _createQrCodeUseCase.Handle(data);
+            QrCode qrCode = _createQrCodeUseCase.Handle(data, userId);
+            Console.WriteLine(qrCode);
             _context.QrCodes.Add(qrCode);
             _context.SaveChanges();
             

@@ -339,7 +339,7 @@ public class CreateQrCodeUseCase
         "10011001" +
         "100110011001100110011001";
 
-    public QrCode Handle(string url)
+    public QrCode Handle(string url, int userId)
     {
         int byteToEncodeStringData = 11;
         List<string> binaryData = new();
@@ -385,6 +385,7 @@ public class CreateQrCodeUseCase
         return new QrCode()
         {
             url = url,
+            UserId = userId,
             EncodedUrl = encodedUrl,
             InformationFormat = LevelMaskPatterns[_errorCodeLevel][DefaultDataMask]
         };

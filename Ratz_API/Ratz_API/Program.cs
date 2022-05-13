@@ -6,14 +6,17 @@ using Ratz_API.QrCodeAggregate.Database;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-AddJWTTokenServicesExtensions.AddJWTTokenServices(builder.Services, builder.Configuration);
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); 
+builder.Services.AddSwaggerGen();
+AddJWTTokenServicesExtensions.AddJWTTokenServices(builder.Services, builder.Configuration);
 builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
 builder.Services.AddScoped<IQrCodeRepository, SqlQrCodeRepository>();
 builder.Services.AddDbContextPool<RatzDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RatzDbConnection")));
+
+
 
 var app = builder.Build();
 

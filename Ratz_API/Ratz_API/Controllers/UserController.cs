@@ -7,6 +7,8 @@ using Ratz_API.Models.DataTransferObjects;
 using Ratz_API.UserAggregate.DataTransferObjects;
 using Ratz_API.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System.Linq;
 
 namespace Ratz_API.Controllers
 {
@@ -40,29 +42,30 @@ namespace Ratz_API.Controllers
             return aMediumPasswordRegex.IsMatch(iPassword);
         }
 
-        [HttpGet]
-        [Route("/api/user")]
-        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
-        public ActionResult GetUser(string id)
-        {
-            try
-            {
-                User aUser = _userRepository.GetUserById(Int32.Parse(id));
-                if (aUser != null)
-                {
-                   BasicUserDTO aResUser = new BasicUserDTO { Id = aUser.UserId, Email = aUser.Email };    
-                } 
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch
-            {
-                return BadRequest(JsonConvert.SerializeObject(new ErrorResponse("Une erreur est survenue, veuillez réessayer"), Formatting.Indented));
-            }
-            return Ok("Authenticated");
-        }
+        //[HttpGet]
+        //[Route("/api/user")]
+        //[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        //public ActionResult GetUser(string id)
+        //{
+        //    try
+        //    {
+        //        var UserClaims = User.FindFirst(ClaimTypes.Email).Value;
+        //        User aUser = _userRepository.GetUserById(Int32.Parse(id));
+        //        if (aUser != null)
+        //        {
+        //           BasicUserDTO aResUser = new BasicUserDTO { Id = aUser.UserId, Email = aUser.Email };    
+        //        } 
+        //        else
+        //        {
+        //            return NotFound();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return BadRequest(JsonConvert.SerializeObject(new ErrorResponse("Une erreur est survenue, veuillez réessayer"), Formatting.Indented));
+        //    }
+        //    return Ok("Authenticated");
+        //}
 
         [HttpPost]
         [Route("/api/register")]
