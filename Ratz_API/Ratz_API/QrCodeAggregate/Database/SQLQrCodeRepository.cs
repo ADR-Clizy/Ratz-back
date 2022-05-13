@@ -1,13 +1,14 @@
-﻿namespace DatabaseConnection
+﻿using DatabaseConnection;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Ratz_API.QrCodeAggregate.UseCases;
+
+namespace Ratz_API.QrCodeAggregate.Database
 {
-    public class SQLQrCodeRepository : IQrCodeRepository
+    public class SqlQrCodeRepository : IQrCodeRepository
     {
         private readonly RatzDbContext _context;
-
-        public SQLQrCodeRepository(RatzDbContext iContext)
-        {
-            _context = iContext;
-        }
+        private readonly CreateQrCodeUseCase _createQrCodeUseCase = new ();
+        public SqlQrCodeRepository(RatzDbContext iContext) => _context = iContext;
 
         public QrCode DeleteQrCode(int iQrCodeId)
         {
@@ -20,22 +21,20 @@
             return aQrCode;
         }
 
-        public QrCode GetQrCodeById(int iQrCodeId)
-        {
-            
-            return _context.QrCodes.Find(iQrCodeId);
-        }
+        public QrCode GetQrCodeById(int iQrCodeId) => _context.QrCodes.Find(iQrCodeId);
 
-        public QrCode NewQrCode(QrCode ioQrCode)
+        public QrCode NewQrCode(string data)
         {
-            _context.QrCodes.Add(ioQrCode);
+            QrCode qrCode = _createQrCodeUseCase.Handle(data);
+            _context.QrCodes.Add(qrCode);
             _context.SaveChanges();
-            return ioQrCode;
+            
+            return qrCode;
         }
 
         public QrCode UpdateQrCode(QrCode ioQrCodeChanges)
         {
-            var aQrCode = _context.QrCodes.Attach(ioQrCodeChanges);
+            EntityEntry<QrCode> aQrCode = _context.QrCodes.Attach(ioQrCodeChanges);
             aQrCode.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             _context.SaveChanges();
             return ioQrCodeChanges;

@@ -1,6 +1,7 @@
 using DatabaseConnection;
 using Microsoft.EntityFrameworkCore;
 using Ratz_API.Extensions;
+using Ratz_API.QrCodeAggregate.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); 
 builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
-builder.Services.AddScoped<IQrCodeRepository, SQLQrCodeRepository>();
+builder.Services.AddScoped<IQrCodeRepository, SqlQrCodeRepository>();
 builder.Services.AddDbContextPool<RatzDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RatzDbConnection")));
 
 var app = builder.Build();

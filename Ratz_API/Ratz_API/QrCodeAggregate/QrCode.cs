@@ -9,7 +9,8 @@ namespace DatabaseConnection
 
         [Required]
         public string url { get; set; }
-
+        public string EncodedUrl { get; set; }
+        public string InformationFormat { get; set; }
         public int UserId { get; set; }
 
         public User User { get; set; }
