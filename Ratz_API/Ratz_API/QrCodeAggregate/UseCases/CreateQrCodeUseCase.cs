@@ -353,7 +353,7 @@ public class CreateQrCodeUseCase
         {
             if (i == transformedByteData.Count - 1)
             {
-                if (transformedByteData.Count % 2 == 0)
+                if (url.Length % 2 != 0)
                 {
                     byteToEncodeStringData = 6;
                 }
